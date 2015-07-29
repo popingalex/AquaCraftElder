@@ -3,10 +3,12 @@ package org.aqua.parse.yaml.snake;
 import java.io.StringReader;
 import java.util.HashMap;
 
+import org.aqua.parse.MarkupLanguage.DataObject;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.nodes.Node;
+import org.yaml.snakeyaml.nodes.NodeId;
 
 public class SnakeYamlUtil {
     public static void main(String[] args) {
@@ -24,14 +26,46 @@ public class SnakeYamlUtil {
         String s = y.dump(m);
         System.out.println(s);
         Node n = y.compose(new StringReader(s));
-
         System.out.println(n.getEndMark());
         System.out.println(n.getTag());
         System.out.println(n.getNodeId());
         System.out.println(n.getType());
     }
 
-    static class Test {
-        String ob = "erer";
+    public static YamlDataObject getDataObject(String content) {
+        return null;
+    }
+    
+    public static class YamlDataObject implements DataObject{
+
+        @Override
+        public ObjectType getType() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Integer countChilds() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Object getChild(String key) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Object getChild(Integer index) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Object getValue() {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }
