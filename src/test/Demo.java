@@ -11,7 +11,8 @@ public class Demo {
 //        testerList.add(new InteractionTest());
 //        testerList.add(new ProcessorTest());
 //        testerList.add(new org.aqua.file.parse.poi.ExcelTest());
-        testerList.add(new org.aqua.graph.ocr.OCRTest());
+//        testerList.add(new org.aqua.graph.ocr.OCRTest());
+        testerList.add(new org.aqua.parse.MarkupLanguageTest());
         
         for (Tester tester : testerList) {
             String testerName = tester.getClass().getName();

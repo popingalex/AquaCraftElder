@@ -1,6 +1,6 @@
 package org.aqua.parse;
 
-public class MarkupLanguage {
+public class MarkupDataObject {
     /**
      * 标记语言种类
      * @author Alex Xu
@@ -50,13 +50,13 @@ public class MarkupLanguage {
          * @param key
          * @return
          */
-        public Object getChild(String key);
+        public DataObject getChild(String key);
         /**
          * 根据index获得字段/子节点
          * @param index
          * @return
          */
-        public Object getChild(Integer index);
+        public DataObject getChild(Integer index);
         /**
          * 获得该节点的value
          * @return
