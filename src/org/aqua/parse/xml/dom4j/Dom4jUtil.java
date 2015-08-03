@@ -17,8 +17,8 @@ public class Dom4jUtil {
         }
         return null;
     }
-    
-    public static class XMLDataObject implements DataObject{
+
+    public static class XMLDataObject implements DataObject {
         private Element element;
 
         private XMLDataObject(Element element) {
@@ -38,17 +38,22 @@ public class Dom4jUtil {
 
         @Override
         public DataObject getChild(String key) {
-            return new XMLDataObject((Element)element.elements(key).get(0));
+            return new XMLDataObject((Element) element.elements(key).get(0));
         }
 
         @Override
         public DataObject getChild(Integer index) {
-            return new XMLDataObject((Element)element.elements().get(index));
+            return new XMLDataObject((Element) element.elements().get(index));
         }
 
         @Override
         public Object getValue() {
             return element.getText();
+        }
+
+        @Override
+        public String getKey() {
+            return element.getName();
         }
     }
 }

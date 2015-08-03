@@ -62,5 +62,6 @@ public class MarkupDataObject {
          * @return
          */
         public Object getValue();
+        public String getKey();
     }
 }

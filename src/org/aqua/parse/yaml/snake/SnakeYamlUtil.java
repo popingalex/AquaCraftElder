@@ -1,71 +1,87 @@
 package org.aqua.parse.yaml.snake;
 
 import java.io.StringReader;
-import java.util.HashMap;
 
 import org.aqua.parse.MarkupDataObject.DataObject;
-import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.DumperOptions.FlowStyle;
+import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeId;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.ScalarNode;
+import org.yaml.snakeyaml.nodes.SequenceNode;
 
 public class SnakeYamlUtil {
-    public static void main(String[] args) {
-        HashMap<String, Object> m = new HashMap<String, Object>();
-        m.put("123", "C:/workspace/billing/err_verifile");
-        HashMap<String, Object> m2 = new HashMap<String, Object>();
-        m2.put("456", -1);
-        m.put("re", m2);
-        m2.put("fff", new String[] { "123", "+1" });
-
-        DumperOptions opt = new DumperOptions();
-        opt.setDefaultFlowStyle(FlowStyle.BLOCK);
-        Yaml y = new Yaml(opt);
-
-        String s = y.dump(m);
-        System.out.println(s);
-        Node n = y.compose(new StringReader(s));
-        System.out.println(n.getEndMark());
-        System.out.println(n.getTag());
-        System.out.println(n.getNodeId());
-        System.out.println(n.getType());
-    }
-
     public static YamlDataObject getDataObject(String content) {
-        return null;
+        return new YamlDataObject(new Yaml().compose(new StringReader(content)));
     }
-    
-    public static class YamlDataObject implements DataObject{
+   
+    public static class YamlDataObject implements DataObject {
+        private Node node;
+
+        private YamlDataObject(Node node) {
+            this.node = node;
+        }
 
         @Override
         public ObjectType getType() {
-            // TODO Auto-generated method stub
-            return null;
+            switch (node.getNodeId()) {
+            case mapping:
+                return ObjectType.Map;
+            case sequence:
+                return ObjectType.List;
+            case scalar:
+                return ObjectType.Value;
+            default:
+                return null;
+            }
         }
 
         @Override
         public Integer countChilds() {
-            // TODO Auto-generated method stub
-            return null;
+            switch (node.getNodeId()) {
+            case mapping:
+                return ((MappingNode) node).getValue().size();
+            case sequence:
+                return ((SequenceNode) node).getValue().size();
+            default:
+                return 0;
+            }
         }
 
         @Override
         public DataObject getChild(String key) {
-            // TODO Auto-generated method stub
+            for (NodeTuple t : ((MappingNode) node).getValue()) {
+                if (((ScalarNode) t.getKeyNode()).getValue().equals(key)) {
+                    return new YamlDataObject(t.getValueNode());
+                }
+            }
             return null;
         }
 
         @Override
         public DataObject getChild(Integer index) {
-            // TODO Auto-generated method stub
-            return null;
+            switch (node.getNodeId()) {
+            case mapping:
+                if (((MappingNode) node).getValue().size() > index) {
+                    return new YamlDataObject(((MappingNode) node).getValue().get(index).getValueNode());
+                }
+            case sequence:
+                if (((SequenceNode) node).getValue().size() > index) {
+                    return new YamlDataObject(((SequenceNode) node).getValue().get(index));
+                }
+            default:
+                return null;
+            }
         }
 
         @Override
         public Object getValue() {
-            // TODO Auto-generated method stub
-            return null;
+            return getKey();
+        }
+
+        @Override
+        public String getKey() {
+            return ((ScalarNode)node).getValue();
         }
     }
 }
