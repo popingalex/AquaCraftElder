@@ -14,9 +14,10 @@ public class SnakeYamlUtil {
     public static YamlDataObject getDataObject(String content) {
         return new YamlDataObject(new Yaml().compose(new StringReader(content)));
     }
-   
+
     public static class YamlDataObject implements DataObject {
-        private Node node;
+        private Node   node;
+        private String key;
 
         private YamlDataObject(Node node) {
             this.node = node;
@@ -62,8 +63,12 @@ public class SnakeYamlUtil {
         public DataObject getChild(Integer index) {
             switch (node.getNodeId()) {
             case mapping:
+
                 if (((MappingNode) node).getValue().size() > index) {
-                    return new YamlDataObject(((MappingNode) node).getValue().get(index).getValueNode());
+                    NodeTuple tuple = ((MappingNode) node).getValue().get(index);
+                    YamlDataObject child = new YamlDataObject(tuple.getValueNode());
+                    child.key = ((ScalarNode) tuple.getKeyNode()).getValue();
+                    return child;
                 }
             case sequence:
                 if (((SequenceNode) node).getValue().size() > index) {
@@ -76,12 +81,12 @@ public class SnakeYamlUtil {
 
         @Override
         public Object getValue() {
-            return getKey();
+            return ((ScalarNode) node).getValue();
         }
 
         @Override
         public String getKey() {
-            return ((ScalarNode)node).getValue();
+            return key;
         }
     }
 }

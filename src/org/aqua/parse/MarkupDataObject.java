@@ -1,5 +1,9 @@
 package org.aqua.parse;
 
+import org.aqua.io.file.FileUtil;
+import org.aqua.parse.xml.dom4j.Dom4jUtil;
+import org.aqua.parse.yaml.snake.SnakeYamlUtil;
+
 public class MarkupDataObject {
     /**
      * 标记语言种类
@@ -20,9 +24,9 @@ public class MarkupDataObject {
         case JSON:
             return null;
         case XML:
-            return null;
+            return Dom4jUtil.getDataObject(FileUtil.readFile(path));
         case YAML:
-            return null;
+            return SnakeYamlUtil.getDataObject(FileUtil.readFile(path));
         }
         return null;
     }
