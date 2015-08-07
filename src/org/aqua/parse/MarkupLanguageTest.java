@@ -2,6 +2,7 @@ package org.aqua.parse;
 
 import org.aqua.io.file.FileUtil;
 import org.aqua.parse.MarkupDataObject.DataObject;
+import org.aqua.parse.json.JSONUtil;
 import org.aqua.parse.xml.dom4j.Dom4jUtil;
 import org.aqua.parse.yaml.snake.SnakeYamlUtil;
 
@@ -22,10 +23,21 @@ public class MarkupLanguageTest extends Tester {
         System.out.println(dataO.getChild("dependencies").getChild(2).getChild("groupId").getValue());
         
         System.out.println("yml:");
-        dataO = SnakeYamlUtil.getDataObject(FileUtil.readFile("C:/workspace/bill/source/testcase.yml"));
+        dataO = SnakeYamlUtil.getDataObject(FileUtil.readFile("E:/testcase.yml"));
         System.out.println(dataO.countChilds());
         System.out.println(dataO.getChild("biz").getValue());
         System.out.println(dataO.getChild("rec").getChild("file").getChild("file_prov").getValue());
+        
+        
+        System.out.println("json:");
+        dataO = JSONUtil.getDataObject("要解析的json数据");
+        System.out.println(dataO.countChilds());
+        System.out.println(dataO.getChild("biz").getValue());
+        System.out.println(dataO.getChild("rec").getChild("file").getChild("file_prov").getValue());
+        
+        
+        
+        
     }
 
 }
