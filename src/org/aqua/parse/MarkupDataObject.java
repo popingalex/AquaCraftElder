@@ -1,12 +1,13 @@
 package org.aqua.parse;
 
 import org.aqua.io.file.FileUtil;
+import org.aqua.parse.json.JSONUtil;
 import org.aqua.parse.xml.dom4j.Dom4jUtil;
 import org.aqua.parse.yaml.snake.SnakeYamlUtil;
 
 public class MarkupDataObject {
     /**
-     * 标记语言种类
+     * 鏍囪璇█绉嶇被
      * @author Alex Xu
      *
      */
@@ -14,7 +15,7 @@ public class MarkupDataObject {
         JSON, XML, YAML
     }
     /**
-     * 获得某类型的根节点
+     * 鑾峰緱鏌愮被鍨嬬殑鏍硅妭鐐�
      * @param path
      * @param type
      * @return
@@ -22,7 +23,7 @@ public class MarkupDataObject {
     public static DataObject getDataObject(String path, Language type) {
         switch (type) {
         case JSON:
-            return null;
+            return JSONUtil.getDataObject(FileUtil.readFile(path));
         case XML:
             return Dom4jUtil.getDataObject(FileUtil.readFile(FileUtil.readReader(path)));
         case YAML:
@@ -31,7 +32,7 @@ public class MarkupDataObject {
         return null;
     }
     /**
-     * 数据节点
+     * 鏁版嵁鑺傜偣
      * @author Alex Xu
      *
      */
@@ -40,29 +41,29 @@ public class MarkupDataObject {
             Map, List, Value
         }
         /**
-         * 获得该节点的类型
+         * 鑾峰緱璇ヨ妭鐐圭殑绫诲瀷
          * @return
          */
         public ObjectType getType();
         /**
-         * 获得字段/子节点的计数
+         * 鑾峰緱瀛楁/瀛愯妭鐐圭殑璁℃暟
          * @return
          */
         public Integer countChilds();
         /**
-         * 根据key获得字段/子节点
+         * 鏍规嵁key鑾峰緱瀛楁/瀛愯妭鐐�
          * @param key
          * @return
          */
         public DataObject getChild(String key);
         /**
-         * 根据index获得字段/子节点
+         * 鏍规嵁index鑾峰緱瀛楁/瀛愯妭鐐�
          * @param index
          * @return
          */
         public DataObject getChild(Integer index);
         /**
-         * 获得该节点的value
+         * 鑾峰緱璇ヨ妭鐐圭殑value
          * @return
          */
         public Object getValue();
