@@ -15,17 +15,18 @@ public class MarkupLanguageTest extends Tester {
         // TODO Auto-generated method stub
 //         DataObject o = MarkupDataObject.getDataObject(null, Language.YAML);
         System.out.println("xml:");
-        dataO = Dom4jUtil.getDataObject(FileUtil.readFile("pom.xml"));
+        dataO = Dom4jUtil.getDataObject(FileUtil.readFile(FileUtil.readReader("pom.xml")));
         
         System.out.println(dataO.countChilds());
         System.out.println(dataO.getChild("groupId").getValue());
         System.out.println(dataO.getChild("dependencies").getChild(2).getChild("groupId").getValue());
         
         System.out.println("yml:");
-        dataO = SnakeYamlUtil.getDataObject(FileUtil.readFile("C:/workspace/bill/source/testcase.yml"));
-        System.out.println(dataO.countChilds());
-        System.out.println(dataO.getChild("biz").getValue());
-        System.out.println(dataO.getChild("rec").getChild("file").getChild("file_prov").getValue());
+        dataO = SnakeYamlUtil.getDataObject(FileUtil.readFile(FileUtil.readReader("C:/workspace/bill/source/testcase.yml")));
+        dataO = SnakeYamlUtil.getDataObject(FileUtil.readFile(FileUtil.readReader("source/messages.yml")));
+//        System.out.println(dataO.countChilds());
+//        System.out.println(dataO.getChild("biz").getValue());
+//        System.out.println(dataO.getChild("rec").getChild("file").getChild("file_prov").getValue());
     }
 
 }

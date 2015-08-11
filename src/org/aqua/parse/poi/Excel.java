@@ -14,7 +14,7 @@ public class Excel {
         
         try {
         if (path.endsWith("-xls")) {
-                wb = new HSSFWorkbook(FileUtil.readFileStream(path));
+                wb = new HSSFWorkbook(FileUtil.readStream(path));
         } else if (path.endsWith("xlsx")) {
             wb = new XSSFWorkbook();
         }

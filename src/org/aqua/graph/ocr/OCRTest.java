@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -146,6 +145,6 @@ public class OCRTest extends Tester {
             e.printStackTrace();
         }
 
-        return FileUtil.readFile("result/out_ocr.txt");
+        return FileUtil.readFile(FileUtil.readReader("result/out_ocr.txt"));
     }
 }

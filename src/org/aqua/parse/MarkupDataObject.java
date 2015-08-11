@@ -24,9 +24,9 @@ public class MarkupDataObject {
         case JSON:
             return null;
         case XML:
-            return Dom4jUtil.getDataObject(FileUtil.readFile(path));
+            return Dom4jUtil.getDataObject(FileUtil.readFile(FileUtil.readReader(path)));
         case YAML:
-            return SnakeYamlUtil.getDataObject(FileUtil.readFile(path));
+            return SnakeYamlUtil.getDataObject(FileUtil.readFile(FileUtil.readReader(path)));
         }
         return null;
     }
