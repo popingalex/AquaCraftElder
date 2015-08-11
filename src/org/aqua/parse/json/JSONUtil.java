@@ -72,7 +72,15 @@ public class JSONUtil{
 			public void setJsonutil(JSONUtil jsonutil) {
 				this.jsonutil = jsonutil;
 			}
+			
+			
 	  
+	@Override
+			public String toString() {
+				// TODO Auto-generated method stub
+				return super.toString();
+			}
+
 	public int getDataObject(JSONUtil jsonutil) {
 		return jsonutil.getDataObject(getJsonutil());
 	} 
