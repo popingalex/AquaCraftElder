@@ -1,16 +1,21 @@
-package org.aqua.graph.pixel;
+package org.aqua.graph.voxel;
 
 import java.util.LinkedList;
 
 import javax.swing.event.ListSelectionEvent;
 
-public class Pixel {
+public class VoxelModel {
     private Integer                                     fieldLength;
     private Integer                                     width;      // x
     private Integer                                     length;     // y
     private Integer                                     height;     // z
     private LinkedList<LinkedList<LinkedList<Integer>>> content;
 
+    public void resize(Integer width, Integer length, Integer height) {
+        content = new LinkedList<LinkedList<LinkedList<Integer>>>();
+        
+    }
+    
     public boolean checkLegal(Integer x, Integer y, Integer z) {
         return content.size() > z && content.get(z).size() > y && content.get(z).get(y).size() > x;
     }

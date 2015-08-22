@@ -1,4 +1,4 @@
-package org.aqua.graph.pixel;
+package org.aqua.graph.voxel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class PixelEditor {
+public class WTFCalculator {
     static class Result implements Comparable<Result> {
         public Integer       sum;
         public List<Integer> src;

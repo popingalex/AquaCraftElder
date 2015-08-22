@@ -12,12 +12,11 @@ public class JSONUtil{
 	 public static JSONDataObject getDataObject(String content) {
 //	        try {
 //	            Element root = new SAXReader().read(new StringReader(content)).getRootElement();
-	            return new JSONDataObject(new JSONUtil().compose(new StringReader(content)));//此处应该有json的包导入
+	            return new JSONDataObject(new JSONUtil().compose(new StringReader(content)));//锟剿达拷应锟斤拷锟斤拷json锟侥帮拷锟斤拷
 //	        } catch (DocumentException e) {
 //	            e.printStackTrace();
 //	        }
 //	        return null;
-	            System.out.println(123);
 	    }
 	private JSONUtil jsonutil;
 	  private JSONUtil compose(StringReader stringReader) {
