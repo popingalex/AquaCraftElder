@@ -172,13 +172,15 @@ public class VoxelMatrixViewer {
             modelRoot = new VoxelMatrixRoot() {
 
                 @Override
-                public Object removeNode(int coordX, int coordY, int coordZ) {
-                    return super.removeNode(coordX, coordY, coordZ);
-                }
-
-                @Override
-                public void attachNode(int coordX, int coordY, int coordZ, Object content) {
-                    super.attachNode(coordX, coordY, coordZ, content);
+                public Object attachNode(int[] coord3) {
+                    VoxelBox box = new VoxelBox(scale * 10, scale * 10, scale * 10);
+                    Transform3D trans = new Transform3D();
+                    trans.setTranslation(new Vector3d(coord3[IndexX], coord3[IndexY], coord3[IndexZ]));
+                    TransformGroup tg = new TransformGroup();
+                    tg.setTransform(trans);
+                    tg.addChild(box);
+                    addChild(tg);
+                    return box;
                 }
 
             };
@@ -187,43 +189,15 @@ public class VoxelMatrixViewer {
             buildWorkbench(2);
         }
 
-        // private void rebuild() {
-        //
-        // }
-
         private void buildWorkbench(int radius) {
-            VoxelMatrixRoot root = workbenchRoot;
 
-            float size = 0.4f;
-            root.centerNode.content = new VoxelBox(size, size, size);
-            // root.centerNode.content = new VoxelBox(10 * scale, 1 * scale, 10 * scale);
-
-            root.realloc(new int[] { -radius, -2, -radius }, new int[] { radius, 2, radius });
-            buildVoxelBox(root.centerNode);
+//            float size = 0.4f;
+//            workbenchRoot.centerNode.content = new VoxelBox(size, size, size);
+            workbenchRoot.realloc(new int[] { -radius, -2, -radius }, new int[] { radius, 2, radius });
         }
 
         private void buildModel() {
 
-        }
-
-        private void buildVoxelBox(VoxelMatrixNode node) {
-            VoxelBox box = (VoxelBox) node.content;
-            if (box.getParent() == null) {
-                Transform3D trans = new Transform3D();
-                trans.setTranslation(new Vector3d(node.location[0], node.location[1], node.location[2]));
-                System.out.println("build:" + Arrays.toString(node.location));
-                // System.out.println(new Vector3d(node.location[0], node.location[1], node.location[2]));
-                TransformGroup tg = new TransformGroup();
-                tg.setTransform(trans);
-                tg.addChild(box);
-                addChild(tg);
-
-                for (int i = 0, sum = node.adjacentNode.length; i < sum; i++) {
-                    if (node.adjacentNode[i] != null) {
-                        buildVoxelBox(node.adjacentNode[i]);
-                    }
-                }
-            }
         }
 
         public void buildCursor(int x, int y, int z, int direction) {

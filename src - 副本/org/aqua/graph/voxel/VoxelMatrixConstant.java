@@ -13,5 +13,4 @@ public interface VoxelMatrixConstant {
     public int PosX           = 3;
     public int PosY           = 4;
     public int PosZ           = 5;
-
 }
