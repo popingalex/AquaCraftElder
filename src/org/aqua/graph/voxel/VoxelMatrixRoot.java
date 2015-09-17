@@ -1,9 +1,15 @@
 package org.aqua.graph.voxel;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
-public class VoxelMatrixRoot implements VoxelMatrixConstant {
+import org.aqua.graph.voxel.VoxelMatrixUtil.BesiegeAction;
+import org.aqua.graph.voxel.VoxelMatrixUtil.LayerAttachAction;
+import org.aqua.graph.voxel.VoxelMatrixUtil.LayerLinkAction;
+import org.aqua.graph.voxel.VoxelMatrixUtil.NodeAction;
+import org.aqua.graph.voxel.VoxelMatrixUtil.SerializeAction;
+import org.aqua.io.file.FileUtil;
+
+public abstract class VoxelMatrixRoot implements VoxelMatrixConstant {
 
     private NodeAction     layerAttachAction;
     private NodeAction     layerLinkAction;
@@ -12,41 +18,30 @@ public class VoxelMatrixRoot implements VoxelMatrixConstant {
     public VoxelMatrixNode centerNode;
 
     public VoxelMatrixRoot() {
-        lowerPoint = new int[3];
-        upperPoint = new int[3];
+        lowerPoint = new int[]{0,0,0};
+        upperPoint = new int[]{0,0,0};
+
         centerNode = new VoxelMatrixNode();
         attachContent(centerNode);
 
-        layerAttachAction = new NodeAction() {
-            @Override
-            public void act(VoxelMatrixNode node) {
-                int normal6 = (Integer) source.get(SOURCE_DIRECT_NORMAL);
-                VoxelMatrixNode temp = new VoxelMatrixNode();   // n : x \y/ z
-                temp.coord3[normal6 % 3] = node.coord3[normal6 % 3] + (normal6 < 3 ? -1 : 1);
-                temp.coord3[(normal6 + 1) % 3] = node.coord3[(normal6 + 1) % 3];
-                temp.coord3[(normal6 + 2) % 3] = node.coord3[(normal6 + 2) % 3];
-                attachContent(temp);
-                temp.round6[(normal6 + 3) % 6] = node;          // y.neg = x
-                temp.round6[normal6] = node.round6[normal6];    // y.pos = z
-                if (node.round6[normal6] != null) {             // if z !+ null z.neg = y
-                    node.round6[normal6].round6[(normal6 + 3) % 6] = temp;
-                }
-                node.round6[normal6] = temp;                    // x.pos = y
-            }
-        };
+        layerAttachAction = new LayerAttachAction() {
 
-        layerLinkAction = new NodeAction() {
             @Override
             public void act(VoxelMatrixNode node) {
-                int normal6 = (Integer) source.get(SOURCE_DIRECT_NORMAL);
-                for (int n = 0, sum = node.round6.length; n < sum; n++) { // 遍历临近节点
-                    if (n % 3 != normal6 % 3 && node.round6[n] != null) { // 平行于该平面且未抵达边界
-                        node.round6[normal6].round6[n] = node.round6[n].round6[normal6];
-                    }
-                }
+                super.act(node);
+                attachContent((VoxelMatrixNode) source.get(ACTION_NODE));
             }
+
         };
+        layerLinkAction = new LayerLinkAction();
     }
+
+    /**
+     * 添加节点操作
+     * 
+     * @param node
+     */
+    public abstract void attachContent(VoxelMatrixNode node);
 
     /**
      * always keep a cube
@@ -73,17 +68,17 @@ public class VoxelMatrixRoot implements VoxelMatrixConstant {
         for (int x = this.upperPoint[IndexX]; x >= upperPoint[IndexX]; x--) {
             removeLayer(x, IndexX);
         }
-        for (int y = this.lowerPoint[IndexY]; y < lowerPoint[IndexY]; y++) {
-            removeLayer(y, IndexY);
-        }
-        for (int y = this.upperPoint[IndexY]; y >= lowerPoint[IndexY]; y--) {
-            removeLayer(y, IndexY);
-        }
         for (int z = this.lowerPoint[IndexZ]; z < lowerPoint[IndexZ]; z++) {
             removeLayer(z, IndexZ);
         }
         for (int z = this.upperPoint[IndexZ]; z >= upperPoint[IndexZ]; z--) {
             removeLayer(z, IndexZ);
+        }
+        for (int y = this.lowerPoint[IndexY]; y < lowerPoint[IndexY]; y++) {
+            removeLayer(y, IndexY);
+        }
+        for (int y = this.upperPoint[IndexY]; y >= lowerPoint[IndexY]; y--) {
+            removeLayer(y, IndexY);
         }
 
         for (int x = this.lowerPoint[IndexX]; x > lowerPoint[IndexX]; x--) {
@@ -92,38 +87,27 @@ public class VoxelMatrixRoot implements VoxelMatrixConstant {
         for (int x = this.upperPoint[IndexX]; x < upperPoint[IndexX]; x++) {
             attachLayer(x + 1, IndexX);
         }
-        for (int y = this.lowerPoint[IndexY]; y > lowerPoint[IndexY]; y--) {
-            attachLayer(y - 1, IndexY);
-        }
-        for (int y = this.upperPoint[IndexY]; y < upperPoint[IndexY]; y++) {
-            attachLayer(y + 1, IndexY);
-        }
         for (int z = this.lowerPoint[IndexZ]; z > lowerPoint[IndexZ]; z--) {
             attachLayer(z - 1, IndexZ);
         }
         for (int z = this.upperPoint[IndexZ]; z < upperPoint[IndexZ]; z++) {
             attachLayer(z + 1, IndexZ);
         }
+        for (int y = this.lowerPoint[IndexY]; y > lowerPoint[IndexY]; y--) {
+            attachLayer(y - 1, IndexY);
+            System.out.println("layer:"+y);
+        }
+        for (int y = this.upperPoint[IndexY]; y < upperPoint[IndexY]; y++) {
+            attachLayer(y + 1, IndexY);
+            System.out.println("layer:"+y);
+        }
+
+        this.lowerPoint = lowerPoint;
+        this.upperPoint = upperPoint;
     }
 
     public VoxelMatrixNode findNode(int[] coord3) {
-        return centerNode != null ? centerNode.findNode(coord3) : null;
-    }
-
-    /**
-     * 添加节点操作
-     * 
-     * @param node
-     */
-    public void attachContent(VoxelMatrixNode node) {
-    }
-
-    /**
-     * 移除节点操作
-     * 
-     * @param node
-     */
-    public void removeContent(VoxelMatrixNode node) {
+        return (null == centerNode) ? null : VoxelMatrixUtil.findNode(centerNode, coord3);
     }
 
     public void attachLayer(int layer, int normal3) { // layer != 0
@@ -135,49 +119,80 @@ public class VoxelMatrixRoot implements VoxelMatrixConstant {
         // VoxelMatrixNode node = findNode(vector[IndexX] * cutlayer, vector[IndexY] * cutlayer, vector[IndexZ] *
         // cutlayer);
         if (node != null) {
-            iterateLayer(normal3 + (layer > 0 ? 3 : 0), node, layerAttachAction);
-            iterateLayer(normal3 + (layer > 0 ? 3 : 0), node, layerLinkAction);
+            VoxelMatrixUtil.iterateLayer(node, layerAttachAction, normal3 + (layer > 0 ? 3 : 0));
+            VoxelMatrixUtil.iterateLayer(node, layerLinkAction, normal3 + (layer > 0 ? 3 : 0));
         }
     }
 
     public void removeLayer(int layer, int asis) {
-        if (layer == 0) {// 重新选中心点
-
-        }
     }
 
-    private void iterateLayer(int normal6, VoxelMatrixNode node, NodeAction action) {
-        if (node == null)
-            return;
-        int priNormal = (normal6 + 1) % 3;  // primary direction on working layer
-        int secNormal = (normal6 + 2) % 3;  // secondary direction on working layer
-
-        int priComponent = node.coord3[priNormal];
-        int secComponent = node.coord3[secNormal];
-
-        if (secComponent != 0) {            // stretch on sec direction
-            iterateLayer(normal6, node.round6[secComponent > 0 ? secNormal + 3 : secNormal], action);
-        } else if (priComponent != 0) {     // stretch on pri and sec & -sec
-            iterateLayer(normal6, node.round6[priComponent > 0 ? priNormal + 3 : priNormal], action);
-            iterateLayer(normal6, node.round6[secNormal], action);
-            iterateLayer(normal6, node.round6[secNormal + 3], action);
-        } else {                            // stretch on both pri & -pri, sec & -sec
-            iterateLayer(normal6, node.round6[priNormal], action);
-            iterateLayer(normal6, node.round6[priNormal + 3], action);
-            iterateLayer(normal6, node.round6[secNormal], action);
-            iterateLayer(normal6, node.round6[secNormal + 3], action);
+    public String exportModel() {
+        NodeAction beseigeAction = new BesiegeAction();
+        for (int x = lowerPoint[IndexX]; x <= upperPoint[IndexX]; x++) {
+            VoxelMatrixNode layerCenterNode = VoxelMatrixUtil.findNode(centerNode, new int[] { x, 0, 0 });
+            VoxelMatrixUtil.iterateLayer(layerCenterNode, beseigeAction, IndexX);
         }
 
-        action.source.put(NodeAction.SOURCE_DIRECT_NORMAL, normal6);
-        action.act(node);                   // act Node Action
+        int[] lower = (int[]) beseigeAction.source.get(ACTION_LOWER);
+        int[] upper = (int[]) beseigeAction.source.get(ACTION_UPPER);
+
+        int[] size3 = new int[3];
+        for (int i = 0; i < 3; i++) {
+            size3[i] = upper[i] - lower[i] + 1;
+        }
+
+        int[][][] matrix = new int[size3[IndexY]][size3[IndexZ]][size3[IndexX]];
+        NodeAction serializeAction = new SerializeAction();
+        serializeAction.source.put(ACTION_LOWER, lower);
+        serializeAction.source.put(ACTION_UPPER, upper);
+        serializeAction.source.put(ACTION_MATRIX, matrix);
+        for (int x = lowerPoint[IndexX]; x <= upperPoint[IndexX]; x++) {
+            VoxelMatrixNode layerCenterNode = VoxelMatrixUtil.findNode(centerNode, new int[] { x, 0, 0 });
+            VoxelMatrixUtil.iterateLayer(layerCenterNode, serializeAction, IndexX);
+        }
+
+        StringBuffer dataBuffer = new StringBuffer();
+        dataBuffer.append(size3[IndexX]).append(" ");
+        dataBuffer.append(size3[IndexY]).append(" ");
+        dataBuffer.append(size3[IndexZ]).append(" ");
+
+        char[] chars = "0123456789ABCDEF".toCharArray();
+
+        for (int y = 0; y < size3[IndexY]; y++) {
+            for (int z = 0; z < size3[IndexZ]; z++) {
+                for (int x = 0; x < size3[IndexX]; x++) {
+                    dataBuffer.append(chars[matrix[y][z][x]]);
+                }
+            }
+        }
+
+        FileUtil.makeFile("test", dataBuffer.toString());
+        return dataBuffer.toString();
     }
 
-    public static abstract class NodeAction {
-
-        public static String       SOURCE_DIRECT_NORMAL = "normal";
-        public Map<String, Object> source               = new HashMap<String, Object>();
-        public abstract void act(VoxelMatrixNode node);
-
+    public void importModel(String data) {
+        System.out.println(data);
+        int[] size3 = new int[3];
+        String[] parts = data.split(" ");
+        for (int i = 0; i < 3; i++) {
+            size3[i] = Integer.parseInt(parts[i]);
+        }
+        int[] lower = new int[] { -(size3[IndexX] - 1) / 2, 0, -(size3[IndexZ] - 1) / 2 };
+        int[] upper = new int[] { size3[IndexX] / 2, size3[IndexY], size3[IndexZ] / 2 };
+        System.out.println("low:" + Arrays.toString(lower));
+        System.out.println("upp:" + Arrays.toString(upper));
+        realloc(lower, upper);
+        char[] voxels = parts[3].toCharArray();
+        for (int y = 0, index = 0, z, x; y < size3[IndexY]; y++) {
+            for (z = 0; z < size3[IndexZ]; z++) {
+                for (x = 0; x < size3[IndexX]; x++) {
+                    VoxelMatrixNode node = VoxelMatrixUtil.findNode(centerNode, new int[] {
+                            x - (size3[IndexX] - 1) / 2, y, z - (size3[IndexZ] - 1) / 2 });
+                    node.content.deserialize(((voxels[index++] - 48 + 6) % 23 + 10) % 16);
+                }
+            }
+        }
     }
 
 }
