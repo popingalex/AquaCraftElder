@@ -5,7 +5,10 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
-class NodeIterator implements Comparator<SpaceNode> {
+import org.apache.log4j.Logger;
+
+public class NodeIterator implements Comparator<SpaceNode> {
+    protected Logger logger = Logger.getLogger(getClass());
     private List<SpaceNode> nodelist = new LinkedList<SpaceNode>();
 
     public final List<SpaceNode> getNodelist() {
@@ -23,7 +26,7 @@ class NodeIterator implements Comparator<SpaceNode> {
         return true;
     }
 
-    public boolean stop(SpaceNode node) {
+    public boolean interrupt(SpaceNode node) {
         return false;
     }
 

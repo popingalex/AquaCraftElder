@@ -1,13 +1,16 @@
 package org.aqua.structure.space;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class SpaceRoot {
+    protected Logger    logger = Logger.getLogger(getClass());
     protected SpaceNode center;
     public final int    dimens;
     public final int[]  lower;
     public final int[]  upper;
-
     /**
      * 
      * @param dimens 维度总数
@@ -17,6 +20,7 @@ public class SpaceRoot {
         this.lower = new int[dimens];
         this.upper = new int[dimens];
         center = new SpaceNode(new int[dimens]);
+        center.content = attachContent(center);
     }
 
     /**
@@ -26,6 +30,7 @@ public class SpaceRoot {
      * @param upper
      */
     public final void realloc(int[] lower, int[] upper) {
+        logger.debug("realloc:" + Arrays.toString(lower) + "-" + Arrays.toString(upper));
         for (int i = 0; i < dimens; i++) {
             lower[i] = Math.min(lower[i], 0);
             upper[i] = Math.max(upper[i], 0);
@@ -50,12 +55,14 @@ public class SpaceRoot {
         int[] coords = Util.getVector(dimen2, dimens, surface);
         NodeIterator iterator = iterateNodes(new LocationIterator(coords, dimen2, LocationIterator.Mode.SURFACE));
         List<SpaceNode> nodelist = iterator.getNodelist();
+        logger.debug("attach location:" + nodelist);
         for (SpaceNode node : nodelist) {    // create new Node
             int[] offset = Util.getVector(dimen2, dimens, dimen2 < dimens ? 1 : -1);
             for (int i = 0; i < dimens; i++) {
                 offset[i] += node.coords[i];
             }
             node.rounds[dimen2] = new SpaceNode(offset);
+            logger.debug("attach:" + node + "->" + node.rounds[dimen2]);
             node.rounds[dimen2].rounds[(dimen2 + dimens) % dimens] = node;
         }
         for (SpaceNode node : nodelist) {    // link round Node
@@ -71,7 +78,7 @@ public class SpaceRoot {
             }
         }
         for (SpaceNode node : nodelist) {
-            node.content = attachContent(node);
+            node.rounds[dimen2].content = attachContent(node.rounds[dimen2]);
         }
     }
 
@@ -127,13 +134,17 @@ public class SpaceRoot {
             return;
         }
         if (iterator.accept(node)) {                // 回收判断
+            logger.debug(node + "accepted");
             iterator.iterate(node);                 // 额外操作
             iterator.getNodelist().add(node);
         } else {
+            logger.debug(node + "blocked");
         }
-        if (iterator.stop(node)) {                  // 截断判断
+        if (iterator.interrupt(node)) {              // 截断判断
+            logger.debug(node + "iterrupted");
             return;
         } else {
+            logger.debug(node + "passed");
         }
         int zero;                                   // 归零起点
         for (zero = dimens - 1; zero >= 0 && node.coords[zero] == 0; zero--) {
@@ -141,14 +152,17 @@ public class SpaceRoot {
         if (zero >= 0) {                            // 正向遍历 TODO check zero
             SpaceNode next = node.rounds[node.coords[zero] > 0 ? zero : zero + dimens];
             if (null != next && ((next.coords[zero] - node.coords[zero]) * node.coords[zero] > 0)) {
+                logger.debug("iter:" + node + "->" + next);
                 iterateNodes(next, iterator);
             }
         }
         for (int i = zero + 1; i < dimens; i++) {   // 垂直遍历
             if (null != node.rounds[i]) {
+                logger.debug("iter:" + node + "->" + node.rounds[i]);
                 iterateNodes(node.rounds[i], iterator);
             }
             if (null != node.rounds[i + dimens]) {
+                logger.debug("iter:" + node + "->" + node.rounds[i + dimens]);
                 iterateNodes(node.rounds[i + dimens], iterator);
             }
         }
@@ -160,7 +174,7 @@ public class SpaceRoot {
      * @param content
      * @return
      */
-    public SpaceNode.Content attachContent(SpaceNode node) {
+    protected SpaceNode.Content attachContent(SpaceNode node) {
         return null;
     }
 
@@ -169,6 +183,6 @@ public class SpaceRoot {
      * 
      * @param node
      */
-    public void removeContent(SpaceNode node, SpaceNode.Content content) {
+    protected void removeContent(SpaceNode node, SpaceNode.Content content) {
     }
 }
