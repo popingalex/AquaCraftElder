@@ -3,9 +3,9 @@ package org.aqua.io.charset;
 import org.aqua.net.RequestWorker;
 import org.aqua.parse.json.jackson.JacksonJsonUtil;
 
-import test.Tester;
-
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import demo.Tester;
 
 public class UTFinGBKTest extends Tester {
     @Override

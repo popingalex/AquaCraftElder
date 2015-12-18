@@ -2,17 +2,17 @@ package org.aqua.structure.space;
 
 import java.util.Arrays;
 
-public class SpaceNode {
-    Content                  content;
+public class Planet {
+    protected Content     content;
 
-    public final SpaceNode[] rounds;
-    public final int[]       coords;
-    public final int         dimens;
+    public final Planet[] rounds;
+    public final int[]    coords;
+    public final int      dimens;
 
-    public SpaceNode(int[] coords) {
-        this.coords = coords;
+    public Planet(int[] coords) {
+        this.coords = coords.clone();
         this.dimens = coords.length;
-        this.rounds = new SpaceNode[dimens * 2];
+        this.rounds = new Planet[dimens * 2];
     }
 
     public final void setContent(Content content) {
@@ -29,7 +29,7 @@ public class SpaceNode {
     }
 
     public static interface Content {
-        public String serialize();
-        public void deserialize(String value);
+        public Object serialize();
+        public void deserialize(Object data);
     }
 }

@@ -7,7 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.aqua.io.file.FileUtil;
 
-public class Excel {
+public class ExcelUtil {
     public void read(String path) {
         System.out.println(path);
         Workbook wb = null;

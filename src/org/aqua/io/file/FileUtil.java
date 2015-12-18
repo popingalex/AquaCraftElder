@@ -48,14 +48,15 @@ public class FileUtil {
         StringBuffer buffer = new StringBuffer();
         try {
             BufferedReader bufferedReader = new BufferedReader(reader);
-            String line;
+            String line = bufferedReader.readLine();
+            buffer.append(null == line ? "" : line);
             while ((line = bufferedReader.readLine()) != null) {
-                buffer.append(line).append(System.getProperty("line.separator"));
+                buffer.append(System.getProperty("line.separator")).append(line);
             }
             bufferedReader.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }  catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return buffer.toString();
@@ -64,7 +65,7 @@ public class FileUtil {
     public static Reader readReader(String path) {
         return readReader(path, "UTF-8");
     }
-    
+
     public static Reader readReader(String path, String charset) {
         try {
             return new InputStreamReader(readStream(path), charset);

@@ -6,7 +6,7 @@ import org.aqua.parse.json.JSONUtil;
 import org.aqua.parse.xml.dom4j.Dom4jUtil;
 import org.aqua.parse.yaml.snake.SnakeYamlUtil;
 
-import test.Tester;
+import demo.Tester;
 
 public class MarkupLanguageTest extends Tester {
 

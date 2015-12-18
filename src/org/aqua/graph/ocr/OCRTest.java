@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 
 import org.aqua.io.file.FileUtil;
 
-import test.Tester;
+import demo.Tester;
 
 public class OCRTest extends Tester {
     JFrame        ocrFrame;
@@ -73,13 +73,14 @@ public class OCRTest extends Tester {
             }
         };
         ocrFrame.addMouseListener(mouseListener);
-        File file = new File("source/img_ocr_2.jpg");
+        String path = "source/img_ocr_2.jpg";
+        path = "source/test.png";
+        File file = new File(path);
         try {
             srcImg = ImageIO.read(file);
 
             int width = srcImg.getWidth();
             int height = srcImg.getHeight();
-
             int[] pixelArray = new int[height * width];
             srcImg.getRGB(0, 0, width, height, pixelArray, 0, width);
             int[][] srcHistogram = new int[3][256];
@@ -88,23 +89,18 @@ public class OCRTest extends Tester {
                 srcHistogram[1][color >> 8 & 0xff]++;
                 srcHistogram[2][color >> 0 & 0xff]++;
             }
-
             int[][] dstHistogram = getHE(srcHistogram, width * height);
-
             int cr, cg, cb;
-
             for (int i = 0; i < pixelArray.length; i++) {
                 cr = pixelArray[i] >> 16 & 0xff;
                 cg = pixelArray[i] >> 8 & 0xff;
                 cb = pixelArray[i] >> 0 & 0xff;
-
                 cr = dstHistogram[0][cr];
                 cg = dstHistogram[0][cg];
                 cb = dstHistogram[0][cb];
-
                 pixelArray[i] = 0xff << 24 | cr << 16 | cg << 8 | cb;
             }
-            srcImg.setRGB(0, 0, width, height, pixelArray, 0, width);
+//            srcImg.setRGB(0, 0, width, height, pixelArray, 0, width);
 
             srcBound = new Rectangle(8, 8, width, height);
         } catch (IOException e) {

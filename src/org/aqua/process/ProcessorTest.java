@@ -2,7 +2,7 @@ package org.aqua.process;
 
 import java.util.Arrays;
 
-import test.Tester;
+import demo.Tester;
 
 public class ProcessorTest extends Tester{
 

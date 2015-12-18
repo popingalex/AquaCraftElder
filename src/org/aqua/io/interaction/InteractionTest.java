@@ -2,7 +2,7 @@ package org.aqua.io.interaction;
 
 import java.util.Scanner;
 
-import test.Tester;
+import demo.Tester;
 
 public class InteractionTest extends Tester {
 

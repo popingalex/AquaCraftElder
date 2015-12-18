@@ -1,4 +1,4 @@
-package test;
+package demo;
 
 import java.util.LinkedList;
 
@@ -21,8 +21,9 @@ public class Demo {
         // testerList.add(new org.aqua.file.parse.poi.ExcelTest());
         // testerList.add(new org.aqua.graph.ocr.OCRTest());
         // testerList.add(new org.aqua.parse.MarkupLanguageTest());
-        testerList.add(new org.aqua.structure.space.SpaceTester());
-        // testerList.add(new org.aqua.resource.KeyedPoolTest());
+        // testerList.add(new org.aqua.structure.space.SpaceTester());
+        testerList.add(new org.aqua.resource.KeyedPoolTest());
+        // testerList.add(new org.aqua.parse.itext.RTFTest());
 
         for (Tester tester : testerList) {
             String testerName = tester.getClass().getName();
