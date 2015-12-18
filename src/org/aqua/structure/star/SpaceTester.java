@@ -1,4 +1,4 @@
-package org.aqua.structure.space;
+package org.aqua.structure.star;
 
 import java.util.ArrayList;
 import java.util.Arrays;
