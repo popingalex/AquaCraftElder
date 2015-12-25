@@ -1,6 +1,6 @@
-package org.aqua.structure.parameter;
+package org.aqua.struct.parameter;
 
-import org.aqua.structure.parameter.DatasetTemplet.Type;
+import org.aqua.struct.parameter.DatasetTemplet.Type;
 
 class Field {
     private final Type type;

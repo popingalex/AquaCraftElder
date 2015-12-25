@@ -1,13 +1,13 @@
-package org.aqua.structure.star;
+package org.aqua.struct.galaxy;
 
 import org.aqua.math.Util1D;
 
 public final class Util {
     static int indexBranch(int[] coords1, int[] coords2, int from) {
-        int dimen, dimens;
-        for (dimen = from, dimens = coords1.length; dimen < dimens && coords1[dimen] == coords2[dimen]; dimen++) {
+        int d = from;
+        for (int dimens = coords1.length; d < dimens && coords1[d] == coords2[d]; d++) {
         }
-        return dimen;
+        return d;
     }
 
     static int[] getVector(int dimen, int dimens, int value) {
@@ -31,7 +31,7 @@ public final class Util {
         return dst;
     }
 
-    public static void coverPoint(int[] lower, int[] coords, int[] upper) {
+    static void coverPoint(int[] lower, int[] coords, int[] upper) {
         for (int i = 0; i < coords.length; i++) {
             lower[i] = Math.min(lower[i], coords[i]);
             upper[i] = Math.max(upper[i], coords[i]);

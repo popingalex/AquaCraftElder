@@ -1,8 +1,8 @@
-package org.aqua.structure.parameter;
+package org.aqua.struct.parameter;
 
 import java.util.Map;
 
-import org.aqua.structure.parameter.DatasetTemplet.Type;
+import org.aqua.struct.parameter.DatasetTemplet.Type;
 
 public class Dataset implements IDataset {
     private Map<String, Field> datamap;

@@ -1,4 +1,4 @@
-package org.aqua.structure.path;
+package org.aqua.struct.path;
 
 import java.util.ArrayList;
 import java.util.Arrays;

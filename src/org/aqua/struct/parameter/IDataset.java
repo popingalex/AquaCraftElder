@@ -1,4 +1,4 @@
-package org.aqua.structure.parameter;
+package org.aqua.struct.parameter;
 
 
 public interface IDataset {

@@ -1,26 +1,20 @@
-package org.aqua.structure.star;
+package org.aqua.struct.galaxy;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Planet {
-    protected Content     content;
-
-    public final Planet[] rounds;
-    public final int[]    coords;
-    public final int      dimens;
+    public Content                        content;
+    public final HashMap<Integer, Planet> edgemap;
+    public final Planet[]                 rounds;
+    public final int[]                    coords;
+    public final int                      dimens;
 
     public Planet(int[] coords) {
+        this.edgemap = new HashMap<Integer, Planet>();
         this.coords = coords.clone();
         this.dimens = coords.length;
         this.rounds = new Planet[dimens * 2];
-    }
-
-    public final void setContent(Content content) {
-        this.content = content;
-    }
-
-    public final Content getContent() {
-        return content;
     }
 
     @Override
